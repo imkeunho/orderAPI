@@ -27,4 +27,10 @@ public class Product {
     private String description;
 
     private int price;
+
+    private boolean deleted;
+
+    public void changeDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

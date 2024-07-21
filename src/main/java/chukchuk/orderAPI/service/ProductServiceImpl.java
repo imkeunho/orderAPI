@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,21 +19,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> findAll() {
 
-        List<Product> products = productRepository.findAllByOrderByIdAsc();
-        List<ProductDTO> productDTOList = new ArrayList<>();
-        for (Product product : products) {
-            productDTOList.add(entityToDTO(product));
-        }
+        List<Product> products = productRepository.findAllByNotDelete();
 
-        return productDTOList;
+        return products.stream().map((this::entityToDTO)).toList();
     }
 
     @Override
     public void saveAll(List<ProductDTO> productDTOList) {
-        List<Product> list = new ArrayList<>();
-        for (ProductDTO productDTO : productDTOList) {
-            list.add(dtoToEntity(productDTO));
-        }
+        //기존 product 모두 비활성화 -> deleted true
+        List<Product> products = productRepository.findAllByNotDelete();
+        products.forEach(product -> product.changeDeleted(true));
+
+        List<Product> list = productDTOList.stream().map((this::dtoToEntity)).toList();
+
         productRepository.saveAll(list);
 
     }
@@ -42,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     public Product dtoToEntity(ProductDTO productDTO) {
 
         return Product.builder()
-                .id(productDTO.getId())
+                .id(productDTO.getPno())
                 .name(productDTO.getName())
                 .price(productDTO.getPrice())
                 .description(productDTO.getDescription())
@@ -52,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO entityToDTO(Product product) {
 
         return ProductDTO.builder()
-                .id(product.getId())
+                .pno(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())

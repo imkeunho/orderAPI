@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
         sequenceName = "ORDER_ITEM_SEQ",
         allocationSize = 1
 )
-@ToString(exclude = {"product", "order"})
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,8 +33,6 @@ public class OrderItem {
     private Order order;
 
     private int qty;
-
-    private int orderPrice;
 
     private LocalDateTime orderDate;
 

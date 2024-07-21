@@ -1,10 +1,7 @@
 package chukchuk.orderAPI.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -15,6 +12,7 @@ import lombok.NoArgsConstructor;
         sequenceName = "ORDER_SEQ",
         allocationSize = 1
 )
+//@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
@@ -26,5 +24,9 @@ public class Order {
     private int dong;
 
     private int ho;
+
+    private boolean deleted;
+
+    private String account;
 
 }
