@@ -30,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .dong(orderSheetDTO.getDong())
                 .ho(orderSheetDTO.getHo())
+                .account(orderSheetDTO.getAccount())
                 .build();
 
         orderRepository.save(order);
