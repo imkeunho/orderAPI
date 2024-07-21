@@ -1,7 +1,6 @@
 package chukchuk.orderAPI.repository;
 
 import chukchuk.orderAPI.domain.Order;
-import chukchuk.orderAPI.domain.OrderItem;
 import chukchuk.orderAPI.dto.OrderItemInterface;
 import chukchuk.orderAPI.dto.OrderItemListDTO;
 import lombok.extern.log4j.Log4j2;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 @SpringBootTest
 @Log4j2
 public class OrderItemRepositoryTest {
@@ -19,33 +16,6 @@ public class OrderItemRepositoryTest {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    @Test
-    public void find() {
-        List<OrderItemInterface> result = orderItemRepository.findAllWithOrderQty();
-
-        List<OrderItemListDTO> list = result.stream().map(this::interfaceToDTO).toList();
-        log.info(list);
-    }
-
-    @Test
-    public void findAll() {
-        List<OrderItem> result = orderItemRepository.customFindAll();
-
-        log.info(result);
-    }
-
-    @Test
-    public void findPayment() {
-        List<OrderItem> result = orderItemRepository.findPayment();
-
-        log.info(result);
-    }
-
-    @Test
-    public void findByOrderDong() {
-        List<OrderItem> result = orderItemRepository.findByOrderDong(101);
-        log.info(result);
-    }
 
     @Test
     public void compareOrder() {
