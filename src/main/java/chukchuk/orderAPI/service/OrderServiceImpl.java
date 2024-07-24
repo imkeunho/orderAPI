@@ -3,10 +3,12 @@ package chukchuk.orderAPI.service;
 import chukchuk.orderAPI.domain.Order;
 import chukchuk.orderAPI.domain.OrderItem;
 import chukchuk.orderAPI.domain.Product;
+import chukchuk.orderAPI.dto.OrderItemInterface;
 import chukchuk.orderAPI.dto.OrderItemListDTO;
 import chukchuk.orderAPI.dto.OrderSheetDTO;
 import chukchuk.orderAPI.repository.OrderItemRepository;
 import chukchuk.orderAPI.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -31,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
                 .dong(orderSheetDTO.getDong())
                 .ho(orderSheetDTO.getHo())
                 .account(orderSheetDTO.getAccount())
+                .cashReceipt(orderSheetDTO.getCashReceipt())
                 .build();
 
         orderRepository.save(order);
@@ -47,9 +52,44 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderSheetDTO> findAll() {
+    public List<OrderItemListDTO> findByDongWithOrderQty(int dong) {
 
-        List<OrderItem> orderItemList = orderItemRepository.customFindAll();
+        List<OrderItemInterface> itemsWithOrderQty = null;
+
+        if (dong == 0) {
+            itemsWithOrderQty = orderItemRepository.findAllWithOrderQty();
+        } else {
+            itemsWithOrderQty = orderItemRepository.findByDongWithOrderQty(dong);
+        }
+
+        return itemsWithOrderQty.stream().map((this::interfaceToDTO)).toList();
+    }
+
+    @Override
+    public List<OrderSheetDTO> findOfCompletePayment() {
+
+        List<OrderItem> orderItemList = orderItemRepository.findPayment();
+
+        return createOrderSheet(orderItemList);
+    }
+
+    @Override
+    public void remove(Long ono) {
+        Optional<Order> result = orderRepository.findById(ono);
+        Order order = result.orElseThrow();
+
+        order.changeComplete(true);
+    }
+
+    @Override
+    public void update(Long ono) {
+        Optional<Order> result = orderRepository.findById(ono);
+        Order order = result.orElseThrow();
+
+        order.changePayment(true);
+    }
+
+    public List<OrderSheetDTO> createOrderSheet(List<OrderItem> orderItemList) {
 
         List<OrderSheetDTO> orderSheetDTOList = new ArrayList<>();
 
@@ -69,6 +109,8 @@ public class OrderServiceImpl implements OrderService {
                     .dong(order.getDong())
                     .ho(order.getHo())
                     .account(order.getAccount())
+                    .cashReceipt(order.getCashReceipt())
+                    .payment(order.isPayment())
                     .build();
 
             List<OrderItemListDTO> items = new ArrayList<>();
@@ -94,8 +136,13 @@ public class OrderServiceImpl implements OrderService {
         return orderSheetDTOList;
     }
 
-    @Override
-    public List<OrderSheetDTO> findOfCompletePayment() {
-        return List.of();
+    public OrderItemListDTO interfaceToDTO(OrderItemInterface orderItemInterface) {
+
+        return OrderItemListDTO.builder()
+                .name(orderItemInterface.getName())
+                .price(orderItemInterface.getPrice())
+                .pno(orderItemInterface.getPno())
+                .qty(orderItemInterface.getQty())
+                .build();
     }
 }

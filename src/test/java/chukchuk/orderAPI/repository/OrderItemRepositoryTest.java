@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 @Log4j2
 public class OrderItemRepositoryTest {
@@ -48,5 +50,15 @@ public class OrderItemRepositoryTest {
                 .pno(orderItemInterface.getPno())
                 .qty(orderItemInterface.getQty())
                 .build();
+    }
+
+    @Test
+    public void getOrderItemByDong() {
+
+        List<OrderItemInterface> result = orderItemRepository.findByDongWithOrderQty(101);
+
+        List<OrderItemListDTO> list = result.stream().map((this::interfaceToDTO)).toList();
+
+        log.info(list);
     }
 }
