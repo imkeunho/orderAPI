@@ -12,7 +12,7 @@ import lombok.*;
         sequenceName = "ORDER_SEQ",
         allocationSize = 1
 )
-//@ToString
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
@@ -25,8 +25,24 @@ public class Order {
 
     private int ho;
 
-    private boolean deleted;
+    private boolean payment;
+
+    private boolean complete;
 
     private String account;
+
+    private String cashReceipt;
+
+    public void changePayment(boolean payment) {
+        this.payment = payment;
+    }
+
+    public void changeComplete(boolean complete) {
+        this.complete = complete;
+    }
+
+    public void changeCashReceipt(String cashReceipt) {
+        this.cashReceipt = cashReceipt;
+    }
 
 }

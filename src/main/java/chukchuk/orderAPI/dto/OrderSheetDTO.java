@@ -18,4 +18,8 @@ public class OrderSheetDTO {
     private String account;
 
     private List<OrderItemListDTO> items;
+
+    private String cashReceipt;
+
+    private boolean payment;
 }
