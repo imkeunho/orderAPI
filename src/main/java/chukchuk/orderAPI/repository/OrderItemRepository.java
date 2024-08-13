@@ -18,7 +18,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "order by oi.order.dong, oi.order.ho")
     List<OrderItem> customFindAll();
 
-    //삭제안된(입금확인 완료) 주문 내역
+    //삭제안된 주문 내역
     @Query("select " +
             "oi " +
             "from OrderItem oi " +
@@ -27,7 +27,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "order by oi.order.dong, oi.order.ho")
     List<OrderItem> findPayment();
 
-    //동별 주문 내역
+    //상품별 주문 현황(전체)
     @Query(value =
             "select " +
             "    pro.pno," +
@@ -49,7 +49,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "order by pro.pno", nativeQuery = true)
     List<OrderItemInterface> findAllWithOrderQty();
 
-    //상품별 주문 현황(주문 수)
+    //상품별 주문 현황(동별)
     @Query(value =
             "select " +
             "    pro.pno," +

@@ -3,6 +3,8 @@ package chukchuk.orderAPI.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Builder
@@ -29,6 +31,8 @@ public class Order {
 
     private boolean complete;
 
+    private LocalDateTime orderDate;
+
     private String account;
 
     private String cashReceipt;
@@ -43,6 +47,10 @@ public class Order {
 
     public void changeCashReceipt(String cashReceipt) {
         this.cashReceipt = cashReceipt;
+    }
+
+    public void changeOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
 
 }

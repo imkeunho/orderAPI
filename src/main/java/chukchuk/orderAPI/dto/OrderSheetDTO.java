@@ -22,4 +22,6 @@ public class OrderSheetDTO {
     private String cashReceipt;
 
     private boolean payment;
+
+    private String orderDate;
 }

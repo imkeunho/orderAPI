@@ -1,12 +1,21 @@
 package chukchuk.orderAPI.service;
 
+import chukchuk.orderAPI.dto.PageRequestDTO;
+import chukchuk.orderAPI.dto.PageResponseDTO;
 import chukchuk.orderAPI.dto.ProductDTO;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<ProductDTO> findAll();
+    PageResponseDTO<ProductDTO> getList(PageRequestDTO pageRequestDTO);
 
-    void saveAll(List<ProductDTO> productList);
+    Long register(ProductDTO productDTO);
+
+    ProductDTO get(Long pno);
+
+    void remove(Long pno);
+
+    void modify(ProductDTO productDTO);
+
 }

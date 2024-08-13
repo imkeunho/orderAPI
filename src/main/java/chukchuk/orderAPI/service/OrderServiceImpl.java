@@ -14,9 +14,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+
+import static java.util.Locale.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class OrderServiceImpl implements OrderService {
                 .ho(orderSheetDTO.getHo())
                 .account(orderSheetDTO.getAccount())
                 .cashReceipt(orderSheetDTO.getCashReceipt())
+                .orderDate(LocalDateTime.now())
                 .build();
 
         orderRepository.save(order);
@@ -45,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
                         .order(order)
                         .product(Product.builder().id(dto.getPno()).build())
                         .qty(dto.getQty())
-                        .orderDate(LocalDateTime.now())
                         .build()).toList();
 
         orderItemRepository.saveAll(list);
@@ -111,6 +115,7 @@ public class OrderServiceImpl implements OrderService {
                     .account(order.getAccount())
                     .cashReceipt(order.getCashReceipt())
                     .payment(order.isPayment())
+                    .orderDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(order.getOrderDate()))
                     .build();
 
             List<OrderItemListDTO> items = new ArrayList<>();

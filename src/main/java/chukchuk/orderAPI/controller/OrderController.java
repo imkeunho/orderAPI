@@ -18,16 +18,6 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/")
-    public Map<String, String> insertOrder(@RequestBody OrderSheetDTO orderSheetDTO) {
-
-        log.info(orderSheetDTO);
-
-        orderService.save(orderSheetDTO);
-
-        return Map.of("RESULT", "SUCCESS");
-    }
-
     @GetMapping("/list")
     public List<OrderSheetDTO> getOrders() {
 

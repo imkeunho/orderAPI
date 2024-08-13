@@ -34,6 +34,4 @@ public class OrderItem {
 
     private int qty;
 
-    private LocalDateTime orderDate;
-
 }
