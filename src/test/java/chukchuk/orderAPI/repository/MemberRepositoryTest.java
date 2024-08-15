@@ -35,6 +35,20 @@ public class MemberRepositoryTest {
     }
 
     @Test
+    public void insertTest2() {
+
+        Member member = Member.builder()
+                .memberId("imkeunho1")
+                .name("임근호")
+                .pw(passwordEncoder.encode("030201"))
+                .build();
+
+        member.addRole(MemberRole.USER);
+
+        memberRepository.save(member);
+    }
+
+    @Test
     public void findByMemberIdTest() {
 
         String memberId = "bg_admin";

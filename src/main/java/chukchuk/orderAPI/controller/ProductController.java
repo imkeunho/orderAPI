@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,8 @@ public class ProductController {
 
     private final CustomFileUtil fileUtil;
 
-    @PostMapping("/")
+    @PostMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String, Long> register(ProductDTO productDTO) {
 
         List<MultipartFile> files = productDTO.getFiles();
@@ -45,7 +47,7 @@ public class ProductController {
         return Map.of("RESULT", pno);
     }
 
-    @PostMapping("/submit")
+    @PostMapping("/user/submit")
     public Map<String, String> submitOrder(@RequestBody OrderSheetDTO orderSheetDTO) {
 
         log.info(orderSheetDTO);
@@ -61,19 +63,20 @@ public class ProductController {
         return fileUtil.getFile(fileName);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/user/list")
     public PageResponseDTO<ProductDTO> list(PageRequestDTO pageRequestDTO) {
 
         return productService.getList(pageRequestDTO);
     }
 
-    @GetMapping("/{pno}")
+    @GetMapping("/user/{pno}")
     public ProductDTO get(@PathVariable("pno") Long pno) {
 
         return productService.get(pno);
     }
 
-    @DeleteMapping("/{pno}")
+    @DeleteMapping("/admin/{pno}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String, String> remove(@PathVariable("pno") Long pno) {
 
         List<String> oldFileNames = productService.get(pno).getUploadFileNames();
@@ -85,7 +88,8 @@ public class ProductController {
         return Map.of("RESULT", "SUCCESS");
     }
 
-    @PutMapping("/{pno}")
+    @PutMapping("/admin/{pno}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String, String> modify(@PathVariable("pno") Long pno, ProductDTO productDTO) {
 
         productDTO.setPno(pno);

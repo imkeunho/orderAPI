@@ -104,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
         product.changeName(productDTO.getName());
         product.changeDescription(productDTO.getDescription());
         product.changeDeleted(productDTO.isDeleted());
+        product.changeCreatedAt(LocalDateTime.now());
 
         //이미지 처리
         List<String> uploadFileNames = productDTO.getUploadFileNames();
