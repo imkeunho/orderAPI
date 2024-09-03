@@ -20,6 +20,12 @@ public interface OrderService {
     void remove(Long ono);
 
     //주문 내역 업데이트 (입급확인 payment = true)
-    void update(Long ono);
+    void updatePayment(Long ono);
+
+    //주문 내역 완료 (complete = true)
+    void complete(Long ono);
+
+    //주문 내역 프리징 (freezing = true) 주문내역 초기화, 안보이게 하기
+    void freezing();
 
 }

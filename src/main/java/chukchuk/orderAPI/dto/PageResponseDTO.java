@@ -16,7 +16,7 @@ public class PageResponseDTO<E> {
 
     private PageRequestDTO pageRequestDTO;
 
-    private Boolean prev, next;
+    private Boolean prev, next, hasNext;
 
     private int totalCount, prevPage, nextPage, totalPage, current;
 
@@ -43,6 +43,8 @@ public class PageResponseDTO<E> {
         this.prev = start > 1;
 
         this.next = this.totalCount > end * pageRequestDTO.getSize();
+
+        this.hasNext = this.current < end;
 
         this.pageNumList = IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList());
 

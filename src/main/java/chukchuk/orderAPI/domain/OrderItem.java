@@ -3,8 +3,6 @@ package chukchuk.orderAPI.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Table(name = "bg_order_item")

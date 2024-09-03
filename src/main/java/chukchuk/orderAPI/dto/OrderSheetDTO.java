@@ -23,5 +23,7 @@ public class OrderSheetDTO {
 
     private boolean payment;
 
+    private boolean complete;
+
     private String orderDate;
 }

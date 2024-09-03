@@ -30,10 +30,26 @@ public class OrderController {
         return orderService.findByDongWithOrderQty(dong);
     }
 
-    @PutMapping("/{ono}")
-    public Map<String, String> updateOrder(@PathVariable("ono") Long ono) {
+    @PutMapping("/payment/{ono}")
+    public Map<String, String> updatePayment(@PathVariable("ono") Long ono) {
 
-        orderService.update(ono);
+        orderService.updatePayment(ono);
+
+        return Map.of("RESULT", "SUCCESS");
+    }
+
+    @PutMapping("/complete/{ono}")
+    public Map<String, String> complete(@PathVariable("ono") Long ono) {
+
+        orderService.complete(ono);
+
+        return Map.of("RESULT", "SUCCESS");
+    }
+
+    @PutMapping("/complete/all")
+    public Map<String, String> freezing() {
+
+        orderService.freezing();
 
         return Map.of("RESULT", "SUCCESS");
     }

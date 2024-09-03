@@ -15,17 +15,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "oi " +
             "from OrderItem oi " +
             "where oi.product.deleted = false " +
+            "   and oi.order.freezing = false " +
             "order by oi.order.dong, oi.order.ho")
     List<OrderItem> customFindAll();
-
-    //삭제안된 주문 내역
-    @Query("select " +
-            "oi " +
-            "from OrderItem oi " +
-            "where oi.order.complete = false" +
-            "   and oi.product.deleted = false " +
-            "order by oi.order.dong, oi.order.ho")
-    List<OrderItem> findPayment();
 
     //상품별 주문 현황(전체)
     @Query(value =
@@ -43,7 +35,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "                 inner join BG_ORDER O on O.ID = OI.ORDER_ID " +
             "        where " +
             "          OI.PRODUCT_ID = P.ID" +
-            "          and O.COMPLETE = 0) as qty" +
+            "          and O.FREEZING = 0) as qty" +
             "    from BG_PRODUCT P) pro " +
             "where pro.qty > 0 " +
             "order by pro.pno", nativeQuery = true)
@@ -65,7 +57,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "                 inner join BG_ORDER O on O.ID = OI.ORDER_ID " +
             "        where " +
             "          OI.PRODUCT_ID = P.ID" +
-            "          and O.COMPLETE = 0" +
+            "          and O.FREEZING = 0" +
             "          and O.DONG = :dong) as qty" +
             "    from BG_PRODUCT P) pro " +
             "where pro.qty > 0 " +

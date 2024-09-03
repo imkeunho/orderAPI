@@ -17,10 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-
-import static java.util.Locale.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +40,6 @@ public class OrderServiceImpl implements OrderService {
                 .orderDate(LocalDateTime.now())
                 .build();
 
-        orderRepository.save(order);
-
         List<OrderItem> list = orderSheetDTO.getItems().stream().map((dto) ->
                 OrderItem.builder()
                         .order(order)
@@ -52,7 +47,9 @@ public class OrderServiceImpl implements OrderService {
                         .qty(dto.getQty())
                         .build()).toList();
 
-        orderItemRepository.saveAll(list);
+        list.forEach(order::addOrderItem);
+
+        orderRepository.save(order);
     }
 
     @Override
@@ -72,13 +69,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderSheetDTO> findOfCompletePayment() {
 
-        List<OrderItem> orderItemList = orderItemRepository.findPayment();
+        List<OrderItem> orderItemList = orderItemRepository.customFindAll();
 
         return createOrderSheet(orderItemList);
     }
 
     @Override
     public void remove(Long ono) {
+        orderRepository.deleteById(ono);
+    }
+
+    @Override
+    public void updatePayment(Long ono) {
+        Optional<Order> result = orderRepository.findById(ono);
+        Order order = result.orElseThrow();
+
+        order.changePayment(!order.isPayment());
+    }
+
+    @Override
+    public void complete(Long ono) {
         Optional<Order> result = orderRepository.findById(ono);
         Order order = result.orElseThrow();
 
@@ -86,11 +96,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void update(Long ono) {
-        Optional<Order> result = orderRepository.findById(ono);
-        Order order = result.orElseThrow();
-
-        order.changePayment(true);
+    public void freezing() {
+        List<Order> orders = orderRepository.findNotFreezing();
+        orders.forEach(order -> order.changeFreezing(true));
     }
 
     public List<OrderSheetDTO> createOrderSheet(List<OrderItem> orderItemList) {
@@ -115,6 +123,7 @@ public class OrderServiceImpl implements OrderService {
                     .account(order.getAccount())
                     .cashReceipt(order.getCashReceipt())
                     .payment(order.isPayment())
+                    .complete(order.isComplete())
                     .orderDate(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(order.getOrderDate()))
                     .build();
 

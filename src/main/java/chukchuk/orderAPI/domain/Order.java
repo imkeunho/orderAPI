@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
         sequenceName = "ORDER_SEQ",
         allocationSize = 1
 )
-@ToString
+@ToString(exclude = "orderItems")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
@@ -31,11 +33,24 @@ public class Order {
 
     private boolean complete;
 
+    private boolean freezing;
+
     private LocalDateTime orderDate;
 
     private String account;
 
     private String cashReceipt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem orderItem) {
+        if (orderItems == null) {
+            orderItems = new ArrayList<>();
+        }
+        orderItems.add(orderItem);
+    }
 
     public void changePayment(boolean payment) {
         this.payment = payment;
@@ -43,6 +58,10 @@ public class Order {
 
     public void changeComplete(boolean complete) {
         this.complete = complete;
+    }
+
+    public void changeFreezing(boolean freezing) {
+        this.freezing = freezing;
     }
 
     public void changeCashReceipt(String cashReceipt) {
